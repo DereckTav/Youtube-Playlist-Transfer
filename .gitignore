@@ -1,0 +1,7 @@
+.env
+client_secrets.json
+access_token.json
+*.pyc
+__pycache__/
+*.log
+*.db
