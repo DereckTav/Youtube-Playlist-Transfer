@@ -2,6 +2,8 @@ from googleapiclient.discovery import build
 import json
 from authorization import getCredentials
 
+done = False 
+
 def getListOfPlaylist():
     credential = getCredentials()
 
@@ -27,7 +29,7 @@ def getListOfPlaylist():
         
         
 def getPlaylistItems(id):      
-    credential = credential = getCredentials()
+    credential = getCredentials()
 
     with build('youtube', 'v3', credentials=credential) as youtube:
         playlist = youtube.playlistItems()
@@ -37,6 +39,26 @@ def getPlaylistItems(id):
 
     return json.dumps(playlists_response, sort_keys=True, indent=4)
 
+
+def createPlaylist(playlist_json):
+    credential = getCredentials()
+
+    with build('youtube', 'v3', credentials=credential) as youtube:
+        youtube_playlist = youtube.playlists()
+
+        user = f"({playlist_json['snippet']['channelId']})"
+
+        playlist_json["snippet"]["title"] = f"{playlist_json['snippet']['title']} {user}"
+
+        response = youtube_playlist.insert(part="snippet", body=playlist_json)
+        response.execute()
+        
+        global done
+        done = True
+
+def isDone():
+    global done
+    return done
 
 if __name__ == "__main__":
     getPlaylistItems('LL')

@@ -13,11 +13,9 @@ async def send_playlist_information(msg, client_tup, pipe):
     print(to_s(msg))
 
 async def create_foreign_playlist(msg, client_tup, pipe):
-    json = msg.decode('utf-8')
-    print(json)
-    #TODO YOUTUBE API
-    # createPlaylist(playlist_json)
-
+    playlist_json = msg.decode('utf-8')
+    youtubeAPI.createPlaylist(playlist_json)
+    pipe.send(b"PlayList sent succesfully, shutting down now", client_tup)
 
 async def main():
     node = None
@@ -72,10 +70,13 @@ async def main():
 
                 # waiting need to implement
                 # set variable as turn off signal
-                # transfer to menu
+                # Exit
                 while True:
                     await asyncio.sleep(1)
-                    #TODO YOUTUBE API
+                    if youtubeAPI.isDone():
+                        break
+
+                choice = "3"
 
             while choice == "2":
                 node.add_msg_cb(send_playlist_information)
@@ -88,25 +89,26 @@ async def main():
                     print("Enter Connection Key or type menu to return to menu or exit to quit")
                     option = input("> ")
 
-                if not re.match(r'[1-9]{3}-[1-9]{3}-[1-9]{3}', option) and option not in ("menu", "exit"):
-                    continue
-
                 if option == "exit":
                     choice = "3"
                     break
 
                 if option == "menu":
+                    await node.close()
+                    node = None
                     choice = ""
                     break
 
+                if not re.match(r'[1-9]{3}-[1-9]{3}-[1-9]{3}', option) and option not in ("menu", "exit"):
+                    continue
+
                 connection_key = option
                 pipe = await node.connect(connection_key)
-                print()
-                print("If you entered the wrong connection key, spam crtl + c, and start over. (Or wait)")
                 
                 if pipe is None:
                     print()
                     print("Connection failed.")
+                    option = ""
                     continue
                 
                 else:
@@ -118,15 +120,15 @@ async def main():
                     print("exit (to quit).")
                     while 1: 
                         option = input("TRANSFER: ")
-                        if option in ("exit"):
-                            option = "3"
+                        if option == "exit":
+                            option = "exit"
                             pipe.close()
                             break
-                        if option in ("N"):
+                        if option == "N":
                             option = "menu"
                             await pipe.close()
                             break
-                        if option in ("Y"):
+                        if option == "Y":
                             playlist_titles, playlist_ids = youtubeAPI.getListOfPlaylist()
 
                             print("Your PlayLists: ")
@@ -156,6 +158,9 @@ async def main():
                                 print("SENT: ", True)
                             else:
                                 print("SENT: ", False)
+
+                            option = "exit"
+                            break
     
         if choice == "3":
             print("Stopping program...")
