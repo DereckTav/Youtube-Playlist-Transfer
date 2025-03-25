@@ -166,11 +166,11 @@ async def main():
                             await pipe.send(binary_data + b"\n")
                             buf = await pipe.recv(timeout=3)
                             if buf:
-                                print("SENT: ", True)
+                                await print("SENT: ", True)
                             else:
-                                print("SENT: ", False)
+                                await print("SENT: ", False)
 
-                            option = "exit"
+                            await option = "exit"
                             break
     
         if choice == "3":
