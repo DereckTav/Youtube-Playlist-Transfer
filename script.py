@@ -18,6 +18,7 @@ async def create_foreign_playlist(msg, client_tup, pipe):
     pipe.send(b"PlayList sent succesfully, shutting down now", client_tup)
 
 async def main():
+    strategies = [P2P_DIRECT, P2P_REVERSE, P2P_PUNCH]
     node = None
     choice = None
 
@@ -54,40 +55,52 @@ async def main():
             if choice == "1":
                 node.add_msg_cb(create_foreign_playlist)
                 await node.start(out=True) # this prints the process of node starting
-
-                print("Setting up connection")
-                
                 try:
-                    part1 = random.randint(100, 999)
-                    part2 = random.randint(100, 999)
-                    part3 = random.randint(100, 999)
 
-                    connection_key = await node.nickname(f"{part1}-{part2}-{part3}")
-                    print(fstr("Connection Key = \033[1;32m{0}\033[0m", (connection_key,)))
-                    print()
+                    print("Setting up connection")
+                    
+                    try:
+                        part1 = random.randint(100, 999)
+                        part2 = random.randint(100, 999)
+                        part3 = random.randint(100, 999)
+
+                        connection_key = await node.nickname(f"{part1}-{part2}-{part3}")
+                        print(fstr("Connection Key = \033[1;32m{0}\033[0m", (connection_key,)))
+                        print()
+                    except:
+                        print("Server error")
+
+                    # waiting need to implement
+                    # set variable as turn off signal
+                    # Exit
+                    print("Type exit to exit:")
+                    while True:
+                        answer = input()
+                        if answer == "exit":
+                            break
+
+                        if youtubeAPI.isDone():
+                            break
+
+                    choice = "3"
                 except:
-                    print("Server error")
+                    sys.exit()
 
-                # waiting need to implement
-                # set variable as turn off signal
-                # Exit
-                while True:
-                    await asyncio.sleep(1)
-                    if youtubeAPI.isDone():
-                        break
-
-                choice = "3"
-
-            while choice == "2":
+            if choice == "2":
                 node.add_msg_cb(send_playlist_information)
                 await node.start(out=True) # this prints the process of node starting
 
+            while choice == "2":
                 option = ""
 
                 if option == "":
                     print()
                     print("Enter Connection Key or type menu to return to menu or exit to quit")
                     option = input("> ")
+
+
+                if not re.match(r'\d{3}-\d{3}-\d{3}\.peer', option) and option not in ("menu", "exit"):
+                    continue
 
                 if option == "exit":
                     choice = "3"
@@ -99,11 +112,8 @@ async def main():
                     choice = ""
                     break
 
-                if not re.match(r'[1-9]{3}-[1-9]{3}-[1-9]{3}', option) and option not in ("menu", "exit"):
-                    continue
-
                 connection_key = option
-                pipe = await node.connect(connection_key)
+                pipe = await node.connect(connection_key, strategies=strategies)
                 
                 if pipe is None:
                     print()
@@ -146,9 +156,10 @@ async def main():
 
                             #checks for canceling playlist can be added here
 
-                            id = playlist_ids(playlist)
+                            id = playlist_ids[playlist]
 
-                            # add if statments, for youtube playlist watchlater
+                            #TODO fix binary data
+                            # says Trying to write to closed socket
                             playlist_json = youtubeAPI.getPlaylistItems(id)
                             binary_data = playlist_json.encode('utf-8')
                 
@@ -168,7 +179,7 @@ async def main():
                 print(".")
                 print("..")
                 await node.close()
-            print("Successfully exited program.")
+            print("Successfully exiting program. Please Wait.")
             sys.exit()
 
         if choice == "4":

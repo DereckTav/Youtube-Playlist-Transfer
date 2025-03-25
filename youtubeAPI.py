@@ -15,17 +15,30 @@ def getListOfPlaylist():
                         #How IN THE WORLD DO I ACCESS SOMEONE ELSE WATCH LATER
                         #selenium
 
-        playlists_response = request.execute()
+        playlist_titles = []
+        playlist_ids = []
 
-        # Extract playlist IDs
-        # give this to other class
-        playlist_title = [item["snippet"]["title"] for item in playlists_response.get("items", [])]
-        playlist_title.append('Liked Videos')
+        while request:
+            # Execute the request and get the response
+            playlists_response = request.execute()
 
-        playlist_ids = [item["id"] for item in playlists_response.get("items", [])]
+            # Extract the playlist titles and add them to the list
+            playlist_titles.extend([item["snippet"]["title"] for item in playlists_response.get("items", [])])
+            playlist_ids.extend([item["id"] for item in playlists_response.get("items", [])])
+
+            # Get the next page token
+            token = playlists_response.get('nextPageToken', None)
+
+            # If there is a next page, update the request with the new pageToken
+            if token:
+                request = playlist.list(part='snippet', mine=True, pageToken=token)
+            else:
+                request = None  # No more pages to fetch
+
         playlist_ids.append('LL')
+        playlist_titles.append('Liked Videos')
 
-    return playlist_title, playlist_ids
+    return playlist_titles, playlist_ids
         
         
 def getPlaylistItems(id):      
