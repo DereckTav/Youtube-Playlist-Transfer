@@ -19,21 +19,17 @@ def getListOfPlaylist():
         playlist_ids = []
 
         while request:
-            # Execute the request and get the response
             playlists_response = request.execute()
 
-            # Extract the playlist titles and add them to the list
             playlist_titles.extend([item["snippet"]["title"] for item in playlists_response.get("items", [])])
             playlist_ids.extend([item["id"] for item in playlists_response.get("items", [])])
 
-            # Get the next page token
             token = playlists_response.get('nextPageToken', None)
 
-            # If there is a next page, update the request with the new pageToken
             if token:
                 request = playlist.list(part='snippet', mine=True, pageToken=token)
             else:
-                request = None  # No more pages to fetch
+                request = None
 
         playlist_ids.append('LL')
         playlist_titles.append('Liked Videos')
