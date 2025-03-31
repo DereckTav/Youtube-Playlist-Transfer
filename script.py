@@ -25,11 +25,17 @@ async def create_foreign_playlist(msg, client_tup, pipe):
 
     # playlist_json = msg.decode('utf-8')
     # print(playlist_json)
-    print("HI IM 1 : I recived something from the client")
-    print(msg.decode('utf-8'))
-    reply = b"PlayList sent succesfully, shutting down now ".join(client_tup)
-    # youtubeAPI.createPlaylist(playlist_json)
-    await pipe.send(reply.encode('utf-8'))
+    # if decoded an not json string know to do nothing
+    try:
+        json.loads(msg)  # Try to parse the string as JSON
+        print("HI IM 1 : I recived something from the client")
+        print(msg.decode('utf-8'))
+        reply = "PlayList sent succesfully, shutting down now ".join(client_tup)
+        # youtubeAPI.createPlaylist(playlist_json)
+        await pipe.send(reply.encode('utf-8'))
+    except json.JSONDecodeError:
+        reply = b"False"
+        await pipe.send(reply)  # Not a valid JSON string
 
 async def main():
     node = None
@@ -55,15 +61,8 @@ async def main():
 
         if choice == "1" or choice == "2":
             if not node:
-                print("Starting...")
-                # maybe can replace fstr with f string
-                # may or maynot need this;
-                if_names = await list_interfaces()
-                print(".")
-                print("..")
-                ifs = await load_interfaces(if_names)
-                print("...")
-                node = P2PNode(ifs=ifs)
+                print("Starting Program ...")
+                node = P2PNode()
         
             if choice == "1":
                 node.add_msg_cb(create_foreign_playlist)
@@ -97,8 +96,8 @@ async def main():
 
             if choice == "2":
                 node.add_msg_cb(send_playlist_information)
-
                 await node.start(out=True) # this prints the process of node starting
+                await node.nickname(node.node_id)
 
             while choice == "2":
                 option = ""
@@ -196,13 +195,13 @@ async def main():
                                 # if size_kb <= 100:
                                     # Add hashing (example, you can customize this part)
                                 binary_data = playlist_json.encode('utf-8')
-                                h = "Hello"
-                                await pipe.send(h.encode('utf-8'))
-                                # await pipe.send(binary_data)
+                                # h = "Hello"
+                                # await pipe.send(h.encode('utf-8'))
+                                await pipe.send(binary_data)
                                 
                                 # Receive response and check if it's successful
                                 buf = await pipe.recv(timeout=3)
-                                await print(buf.decode('utf-8'))
+                                print(buf)
                                         
                                 # else:
                                 #     playlist_Hashchunks = []
