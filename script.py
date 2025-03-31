@@ -28,6 +28,7 @@ async def create_foreign_playlist(msg, client_tup, pipe):
     # if decoded an not json string know to do nothing
     try:
         playlist_json = msg.decode('utf-8')
+        print(playlist_json)
         json.loads(playlist_json)  # Try to parse the string as JSON\
         print(playlist_json)
         reply = "PlayList sent SUCCESFULLY, shutting down now"
