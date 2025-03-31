@@ -13,7 +13,6 @@ import youtubeAPI
 #TODO Incositent connections.
 
 async def create_foreign_playlist(msg, client_tup, pipe):
-    print(msg)
     try:
         print(playlist_json)
         playlist_json = msg.decode('utf-8')
