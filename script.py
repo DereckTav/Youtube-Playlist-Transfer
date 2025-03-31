@@ -11,11 +11,13 @@ import youtubeAPI
             #selenium
 
 #TODO WHY IS IT NOT SENDING ??? !!!! : <<< (((
+#TODO can you edit a constant stat DONE in main from other classes that
+    # import it 
 
 async def send_playlist_information(msg, client_tup, pipe):
     print()
     print("HI IM 2 : I recived something from the server")
-    print(to_s(msg))
+    print(msg.decode('utf-8'))
 
 async def create_foreign_playlist(msg, client_tup, pipe):
     
@@ -24,9 +26,10 @@ async def create_foreign_playlist(msg, client_tup, pipe):
     # playlist_json = msg.decode('utf-8')
     # print(playlist_json)
     print("HI IM 1 : I recived something from the client")
-    print(to_s(msg))
+    print(msg.decode('utf-8'))
+    reply = b"PlayList sent succesfully, shutting down now ".join(client_tup)
     # youtubeAPI.createPlaylist(playlist_json)
-    await pipe.send((b"PlayList sent succesfully, shutting down now ".join(client_tup)).encode('utf-8'))
+    await pipe.send(reply.encode('utf-8'))
 
 async def main():
     node = None
@@ -200,8 +203,9 @@ async def main():
                                 # if size_kb <= 100:
                                     # Add hashing (example, you can customize this part)
                                 binary_data = playlist_json.encode('utf-8')
-                                await pipe.send(to_b("Hello"))
-                                await pipe.send(binary_data)
+                                h = "Hello"
+                                await pipe.send(h.encode('utf-8'))
+                                # await pipe.send(binary_data)
                                 
                                 # Receive response and check if it's successful
                                 buf = await pipe.recv(timeout=3)
