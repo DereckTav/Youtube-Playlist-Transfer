@@ -13,7 +13,9 @@ import youtubeAPI
 #TODO Incositent connections.
 
 async def create_foreign_playlist(msg, client_tup, pipe):
+    print("here")
     try:
+        print(playlist_json)
         playlist_json = msg.decode('utf-8')
         json.loads(playlist_json)  
         print("recieved")
@@ -77,7 +79,6 @@ async def main():
 
             if choice == "2":
                 await node.start(out=True) # this prints the process of node starting
-                await node.nickname(node.node_id)
                 option = ""
 
                 while True:
