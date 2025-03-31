@@ -27,9 +27,10 @@ async def create_foreign_playlist(msg, client_tup, pipe):
     # print(playlist_json)
     # if decoded an not json string know to do nothing
     try:
-        json.loads(msg)  # Try to parse the string as JSON
+        playlist_json = msg.decode('utf-8')
+        json.loads(playlist_json)  # Try to parse the string as JSON
         print("HI IM 1 : I recived something from the client")
-        print(msg.decode('utf-8'))
+        print(playlist_json)
         reply = "PlayList sent succesfully, shutting down now ".join(client_tup)
         # youtubeAPI.createPlaylist(playlist_json)
         await pipe.send(reply.encode('utf-8'))
