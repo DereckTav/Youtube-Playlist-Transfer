@@ -17,7 +17,7 @@ import youtubeAPI
 async def send_playlist_information(msg, client_tup, pipe):
     print()
     print("HI IM 2 : I recived something from the server")
-    print(msg.decode('utf-8'))
+    print(msg)
 
 async def create_foreign_playlist(msg, client_tup, pipe):
     
@@ -28,15 +28,16 @@ async def create_foreign_playlist(msg, client_tup, pipe):
     # if decoded an not json string know to do nothing
     try:
         playlist_json = msg.decode('utf-8')
+        print(playlist_json)
         json.loads(playlist_json)  # Try to parse the string as JSON
         print("HI IM 1 : I recived something from the client")
         print(playlist_json)
         reply = "PlayList sent succesfully, shutting down now ".join(client_tup)
         # youtubeAPI.createPlaylist(playlist_json)
-        await pipe.send(reply.encode('utf-8'))
+        # await pipe.send(reply.encode('utf-8'))
     except json.JSONDecodeError:
         reply = b"False"
-        await pipe.send(reply)  # Not a valid JSON string
+        # await pipe.send(reply)  # Not a valid JSON string
 
 async def main():
     node = None
@@ -102,7 +103,7 @@ async def main():
 
             while choice == "2":
                 option = ""
-
+            
                 if option == "":
                     print()
                     print("Enter Connection Key or type menu to return to menu or exit to quit")
@@ -230,7 +231,8 @@ async def main():
 
                                 #     playlist_Hashchunks_string = ''.join(playlist_Hashchunks)
                                 #     binary_string = ''.join(format(ord(char), '08b') for char in playlist_Hashchunks_string)
-
+                                print(option)
+                                print("here")
                                 option = "exit"
                                 break
                             except KeyboardInterrupt:
