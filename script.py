@@ -100,146 +100,142 @@ async def main():
                 node.add_msg_cb(send_playlist_information)
                 await node.start(out=True) # this prints the process of node starting
                 await node.nickname(node.node_id)
-
-            while choice == "2":
                 option = ""
-            
-                if option == "":
-                    print()
-                    print("Enter Connection Key or type menu to return to menu or exit to quit")
-                    option = input("> ")
 
+                while True:
+                    if option == "":
+                        print()
+                        print("Enter Connection Key or type menu to return to menu or exit to quit")
+                        option = input("> ")
 
-                if not re.match(r'\d{3}-\d{3}-\d{3}\.peer', option) and option not in ("menu", "exit"):
-                    continue
+                    if not re.match(r'\d{3}-\d{3}-\d{3}\.peer', option) and option not in ("menu", "exit"):
+                        continue
 
-                if option == "exit":
-                    choice = "3"
-                    break
+                    if option == "exit":
+                        choice = "3"
+                        break
 
-                if option == "menu":
-                    await node.close()
-                    node = None
-                    choice = ""
-                    break
-                
-                connection_key = option
-                pipe = await node.connect(connection_key)
-                
-                if pipe is None:
-                    print()
-                    print("Connection failed.")
-                    option = ""
-                    continue
-                
-                else:
-                    print()
-                    print("SUCCESSFLY CONNECTED")
-                    print()
-                    print("Y (to send)")
-                    print("N (return to menu)")
-                    print("exit (to quit).")
-                    while 1: 
-                        option = input("TRANSFER: ")
-                        if option == "exit":
-                            option = "exit"
-                            await pipe.close()
-                            break
-                        if option == "N":
-                            option = "menu"
-                            await pipe.close()
-                            break
-                        if option == "Y":
-                            try:
-                                playlist_titles, playlist_ids = youtubeAPI.getListOfPlaylist()
-
-                                print("Your PlayLists: ")
-                                for idx, title in enumerate(playlist_titles, start=1):
-                                    print(f"({idx}) {title} ")
-                                
-                                playlist = input("choose a valid playlist number: ")
-                                while playlist:
-                                    try:
-                                        playlist = int(playlist)
-                                        break
-                                    except:
-                                        print('Please choose a valid playlist number')
-                                        playlist = input("Choose a playlist: ")
-
-                                #checks for canceling playlist can be added here
-
-                                id = playlist_ids[playlist]
-
-                                #TODO fix binary data
-                                # says Trying to write to closed socket
-
-                                '''
-                                Split the files into blocks let's say of 100KB each. 
-                                Then calculate a SHA hash (or some other hashing algorithm) on each of the blocks. 
-                                so if the file is 905KB, you would have 10 such hashes calculated.
-
-                                The server would contain a hash definition file for each file that it serves. 
-                                This hash definition file would contain a list of all of the blocks of the file, along with the hash. 
-                                So if the server is serving our 905KB file called test.exe. 
-                                Then we would have another file called test.exe.hashes which contains a listing of the 10 hashes of the file.
-
-                                The client would download the hash definition file, and ensure that it has all of the blocks. 
-                                The client can request each block individually and after it's downloaded, it can calculate the hash on its end again to ensure there is no corruption.
-
-                                You don't need to physically split the file, splitting a file is just reading the part of it that you are interested in.   
-                                The first block of the file is from byte range 0 to 102399, the next block is from 102400 to 204800, and so on. 
-                                So just open the file, seek to that position, read the data, and close the file.
-                                '''
-
-                                playlist_json = youtubeAPI.getPlaylistItems(id)
-                                # size_kb = len(playlist_json) / 1024
-
-                                # if size_kb <= 100:
-                                    # Add hashing (example, you can customize this part)
-                                binary_data = playlist_json.encode('utf-8')
-                                # h = "Hello"
-                                # await pipe.send(h.encode('utf-8'))
-                                await pipe.send(binary_data)
-                                
-                                # Receive response and check if it's successful
-                                buf = await pipe.recv(timeout=3)
-                                print(buf)
-                                        
-                                # else:
-                                #     playlist_Hashchunks = []
-                                #     chunk_size = 100 * 1024  # 100KB in bytes
-                                #     iterations = math.ceil(size_kb / 100)
-
-                                #     # Generate chunk slices and send them
-                                #     for i in range(iterations):
-                                #         start_idx = i * chunk_size
-                                #         end_idx = min((i + 1) * chunk_size, len(playlist_json))
-
-                                #         chunk = playlist_json[start_idx:end_idx]
-                                #         received_hash = hashlib.sha256(chunk).hexdigest()
-                                #         playlist_Hashchunks.append(received_hash)
-
-                                #     byte_data = joined_hashes.encode('utf-8')  # Encode the string into bytes (UTF-8 encoding)
-                                #     print("Byte Data:", byte_data)
-
-                                #     # Example of sending this byte data over a pipe (simulated with await statements)
-                                #     # Assuming you have a `pipe` object available for communication
-
-                                #     await pipe.send(b"ECHO " + byte_data + b"\n")
-                                #     # return number of item hashes
-                                #     # get those
-
-                                #     playlist_Hashchunks_string = ''.join(playlist_Hashchunks)
-                                #     binary_string = ''.join(format(ord(char), '08b') for char in playlist_Hashchunks_string)
-                                print(option)
-                                print("here")
+                    if option == "menu":
+                        await node.close()
+                        node = None
+                        choice = ""
+                        break
+                    
+                    connection_key = option
+                    pipe = await node.connect(connection_key)
+                    
+                    if pipe is None:
+                        print()
+                        print("Connection failed.")
+                        option = ""
+                        continue
+                    
+                    else:
+                        print()
+                        print("SUCCESSFLY CONNECTED")
+                        print()
+                        print("Y (to send)")
+                        print("N (return to menu)")
+                        print("exit (to quit).")
+                        while 1: 
+                            option = input("TRANSFER: ")
+                            if option == "exit":
                                 option = "exit"
-                                break
-                            except KeyboardInterrupt:
                                 await pipe.close()
-                                await node.close()
-                                sys.exit()
-    
+                                break
+                            if option == "N":
+                                option = "menu"
+                                await pipe.close()
+                                break
+                            if option == "Y":
+                                try:
+                                    playlist_titles, playlist_ids = youtubeAPI.getListOfPlaylist()
+
+                                    print("Your PlayLists: ")
+                                    for idx, title in enumerate(playlist_titles, start=1):
+                                        print(f"({idx}) {title} ")
+                                    
+                                    playlist = input("choose a valid playlist number: ")
+                                    while playlist:
+                                        try:
+                                            playlist = int(playlist)
+                                            break
+                                        except:
+                                            print('Please choose a valid playlist number')
+                                            playlist = input("Choose a playlist: ")
+
+                                    #checks for canceling playlist can be added here
+
+                                    id = playlist_ids[playlist]
+
+                                    #TODO fix binary data
+                                    # says Trying to write to closed socket
+
+                                    '''
+                                    Split the files into blocks let's say of 100KB each. 
+                                    Then calculate a SHA hash (or some other hashing algorithm) on each of the blocks. 
+                                    so if the file is 905KB, you would have 10 such hashes calculated.
+
+                                    The server would contain a hash definition file for each file that it serves. 
+                                    This hash definition file would contain a list of all of the blocks of the file, along with the hash. 
+                                    So if the server is serving our 905KB file called test.exe. 
+                                    Then we would have another file called test.exe.hashes which contains a listing of the 10 hashes of the file.
+
+                                    The client would download the hash definition file, and ensure that it has all of the blocks. 
+                                    The client can request each block individually and after it's downloaded, it can calculate the hash on its end again to ensure there is no corruption.
+
+                                    You don't need to physically split the file, splitting a file is just reading the part of it that you are interested in.   
+                                    The first block of the file is from byte range 0 to 102399, the next block is from 102400 to 204800, and so on. 
+                                    So just open the file, seek to that position, read the data, and close the file.
+                                    '''
+
+                                    playlist_json = youtubeAPI.getPlaylistItems(id)
+                                    # size_kb = len(playlist_json) / 1024
+
+                                    # if size_kb <= 100:
+                                        # Add hashing (example, you can customize this part)
+                                    binary_data = playlist_json.encode('utf-8')
+                                    # h = "Hello"
+                                    # await pipe.send(h.encode('utf-8'))
+                                    await pipe.send(binary_data)
+                                    
+                                    # Receive response and check if it's successful
+                                    # TODO finish function above for response
+                                            
+                                    # else:
+                                    #     playlist_Hashchunks = []
+                                    #     chunk_size = 100 * 1024  # 100KB in bytes
+                                    #     iterations = math.ceil(size_kb / 100)
+
+                                    #     # Generate chunk slices and send them
+                                    #     for i in range(iterations):
+                                    #         start_idx = i * chunk_size
+                                    #         end_idx = min((i + 1) * chunk_size, len(playlist_json))
+
+                                    #         chunk = playlist_json[start_idx:end_idx]
+                                    #         received_hash = hashlib.sha256(chunk).hexdigest()
+                                    #         playlist_Hashchunks.append(received_hash)
+
+                                    #     byte_data = joined_hashes.encode('utf-8')  # Encode the string into bytes (UTF-8 encoding)
+                                    #     print("Byte Data:", byte_data)
+
+                                    #     # Example of sending this byte data over a pipe (simulated with await statements)
+                                    #     # Assuming you have a `pipe` object available for communication
+
+                                    #     await pipe.send(b"ECHO " + byte_data + b"\n")
+                                    #     # return number of item hashes
+                                    #     # get those
+
+                                    #     playlist_Hashchunks_string = ''.join(playlist_Hashchunks)
+                                    #     binary_string = ''.join(format(ord(char), '08b') for char in playlist_Hashchunks_string)
+                                    option = "exit"
+                                    await pipe.close()
+                                    break
+                                except KeyboardInterrupt:
+                                    await pipe.close()
+                                    await node.close()
+                                    sys.exit()
+        
         if choice == "3":
             print("Stopping program...")
             if node:
