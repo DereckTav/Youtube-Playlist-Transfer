@@ -2,7 +2,7 @@ from googleapiclient.discovery import build
 import json
 from authorization import getCredentials
 
-done = False 
+DONE=False 
 
 def getListOfPlaylist():
     credential = getCredentials()
@@ -62,12 +62,11 @@ def createPlaylist(playlist_json):
         response = youtube_playlist.insert(part="snippet", body=playlist_json)
         response.execute()
         
-        global done
-        done = True
+    global DONE
+    DONE = True
 
 def isDone():
-    global done
-    return done
+    return DONE
 
 if __name__ == "__main__":
     getPlaylistItems('LL')

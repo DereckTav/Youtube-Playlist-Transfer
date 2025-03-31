@@ -86,19 +86,12 @@ async def main():
                     # waiting need to implement
                     # set variable as turn off signal
                     # Exit
-                    print("Type exit to exit:")
-                    while True:
+                    print("Waiting")
+                    while not youtubeAPI.isDone():
                         await asyncio.sleep(1)
-                        answer = input()
-                        if answer == "exit":
-                            break
-
-                        if youtubeAPI.isDone():
-                            break
 
                     choice = "3"
-                except e:
-                    print(e)
+                except KeyboardInterrupt:
                     await node.close()
                     sys.exit()
 
@@ -240,8 +233,7 @@ async def main():
 
                                 option = "exit"
                                 break
-                            except:
-                                print(e)
+                            except KeyboardInterrupt:
                                 await pipe.close()
                                 await node.close()
                                 sys.exit()
