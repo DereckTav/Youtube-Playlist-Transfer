@@ -15,9 +15,9 @@ import youtubeAPI
     # import it 
 
 async def send_playlist_information(msg, client_tup, pipe):
-    print()
-    print("HI IM 2 : I recived something from the server")
-    print(msg)
+    status = msg.decode('utf-8')
+    print(status)
+    
 
 async def create_foreign_playlist(msg, client_tup, pipe):
     
@@ -28,15 +28,14 @@ async def create_foreign_playlist(msg, client_tup, pipe):
     # if decoded an not json string know to do nothing
     try:
         playlist_json = msg.decode('utf-8')
+        json.loads(playlist_json)  # Try to parse the string as JSON\
         print(playlist_json)
-        json.loads(playlist_json)  # Try to parse the string as JSON
-        print("HI IM 1 : I recived something from the client")
-        print(playlist_json)
-        reply = "PlayList sent succesfully, shutting down now ".join(client_tup)
+        reply = "PlayList sent SUCCESFULLY, shutting down now"
         # youtubeAPI.createPlaylist(playlist_json)
-        # await pipe.send(reply.encode('utf-8'))
+        status = reply.encode('utf-8')
+        await pipe.send(status)
     except json.JSONDecodeError:
-        reply = b"False"
+        pass
         # await pipe.send(reply)  # Not a valid JSON string
 
 async def main():
