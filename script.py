@@ -79,8 +79,22 @@ async def main():
                     while not JsonChunkProcessor.RECIEVED:
                         await asyncio.sleep(1)
                     
-                    #TODO allow accept and deny of playlist
-                    input("Would you like to accept playlist: " + JsonChunkProcessor.getJson()["items"]["snippet"]["title"])
+                    print("recieved! processing...")
+                    await node.close()
+                    
+                    #what happens if two people try sending you a playlist at once?
+
+                    print()
+                    #che
+                    decision = input("Type 'yes' to receive the playlist, or 'no' if you don't want it. Playlist title <" + JsonChunkProcessor.getJson()["items"]["snippet"]["title"] + ">: ")
+                    while True:
+                        if decision.lower() in ["yes", "y"]:
+                            # this is going to fail
+                            # youtubeAPI.createPlaylist(JsonChunkProcessor.getJson())
+                            break
+                        elif decision.lower() in ["no", "n"]:
+                            pass
+
 
                     choice = "3"
                 except:
