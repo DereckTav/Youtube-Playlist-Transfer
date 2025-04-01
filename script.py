@@ -27,9 +27,6 @@ async def create_foreign_playlist(msg, client_tup, pipe):
     if recieved_valid_json_chunk:
         JsonChunkProcessor.processJsonChunk(chunk)
 
-    if JsonChunkProcessor.RECIEVED:
-        print("LETS GO")
-
 async def main():
     node = None
     choice = None
@@ -86,14 +83,15 @@ async def main():
 
                     print()
                     #che
-                    decision = input("Type 'yes' to receive the playlist, or 'no' if you don't want it. Playlist title <" + JsonChunkProcessor.getJson() + ">: ")
+                    # decision = input("Type 'yes' to receive the playlist, or 'no' if you don't want it. Playlist title <" + JsonChunkProcessor.getJson()["items"]["snippet"]["title"] + ">: ")
+                    print(JsonChunkProcessor.getJson())
                     while True:
-                        if decision.lower() in ["yes", "y"]:
-                            print(JsonChunkProcessor.getJson())
-                            # this is going to fail
-                            # youtubeAPI.createPlaylist(JsonChunkProcessor.getJson())
-                            break
-                        elif decision.lower() in ["no", "n"]:
+                        # if decision.lower() in ["yes", "y"]:
+                        #     print(JsonChunkProcessor.getJson())
+                        #     # this is going to fail
+                        #     # youtubeAPI.createPlaylist(JsonChunkProcessor.getJson())
+                        #     break
+                        # elif decision.lower() in ["no", "n"]:
                             pass
 
 
@@ -113,6 +111,7 @@ async def main():
                         option = input("> ")
 
                     if not re.match(r'\d{3}-\d{3}-\d{3}\.peer', option) and option not in ("menu", "exit"):
+                        option = ""
                         continue
 
                     if option == "exit":
@@ -154,6 +153,11 @@ async def main():
                             if option == "Y":
                                 try:
                                     playlist_titles, playlist_ids = youtubeAPI.getListOfPlaylist()
+
+                                    print()
+                                    print(playlist_titles)
+                                    print(playlist_ids)
+                                    print()
 
                                     print("Your PlayLists: ")
                                     for idx, title in enumerate(playlist_titles, start=1):
