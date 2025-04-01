@@ -1,20 +1,14 @@
 import json
 
 RECIEVED = False
-json_object = ""
+json_chunks = []
 
 def processJsonChunk(chunk):
-    global json_object
-    json_object.join(chunk)
+    global json_chunks
+    json_chunks.append(chunk)
 
     try:
-        if "}" == chunk:
-            print(json_object)
-            try:
-                json.loads(json_object)
-            except Exception as e:
-                print(e)
-
+        json_object = "".join(json_chunks)
         json.loads(json_object)
         global RECIEVED
         RECIEVED = True
@@ -24,5 +18,5 @@ def processJsonChunk(chunk):
         pass
 
 def getJson():
-    return json_object
+    return "".join(json_chunks)
 # if making a loop to send playlist add function to clear json_object
