@@ -4,6 +4,7 @@ RECIEVED = False
 json_object = ""
 
 def processJsonChunk(chunk):
+    global json_object
     json_object.join(chunk)
 
     try:
