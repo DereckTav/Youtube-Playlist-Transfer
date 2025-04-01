@@ -44,7 +44,7 @@ def getPlaylistItems(id):
 
         playlists_response = request.execute()
 
-    return json.dumps(playlists_response, sort_keys=True, indent=4)
+    return json.dumps(playlists_response, indent=4)
 
 
 def createPlaylist(playlist_json):
@@ -57,8 +57,11 @@ def createPlaylist(playlist_json):
 
         playlist_json["items"]['snippet']['title'] = f"{playlist_json["items"][0]['snippet']['channelTitle']} {user}"
 
-        response = youtube_playlist.insert(part="snippet", body=playlist_json)
-        response.execute()
+        # response = youtube_playlist.insert(part="snippet", body=)
+        # response.execute()
+
+def makePlaylistJsonWithTitle(title):
+    pass
 
 if __name__ == "__main__":
-    print(getPlaylistItems('LL'))
+    print(getPlaylistItems('PLFdBzy0C-WaXjLb4TqsNN1Ssv-EIoUNII',))
