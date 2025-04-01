@@ -84,7 +84,7 @@ async def main():
                     # input("Would you like to accept playlist: " + JsonChunkProcessor.getJson())
 
                     choice = "3"
-                except KeyboardInterrupt:
+                except:
                     await node.close()
                     sys.exit()
 
@@ -167,7 +167,7 @@ async def main():
                                     option = "exit"
                                     await pipe.close()
                                     break
-                                except KeyboardInterrupt:
+                                except:
                                     await pipe.close()
                                     await node.close()
                                     sys.exit()

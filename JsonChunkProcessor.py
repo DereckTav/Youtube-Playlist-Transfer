@@ -7,7 +7,13 @@ def processJsonChunk(chunk):
     json_object.join(chunk)
 
     try:
-        print(chunk)
+        if "}" == chunk:
+            print(json_object)
+            try:
+                json.loads(json_object)
+            except Exception as e:
+                print(e)
+
         json.loads(json_object)
         global RECIEVED
         RECIEVED = True
