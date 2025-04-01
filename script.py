@@ -1,26 +1,22 @@
-import math
 from p2pd import *
 import asyncio
 import random
 import sys
 import authorization
 import youtubeAPI
+import JsonChunkProcessor
 
- #TODO for watch later parse youtube website watchlater
+#TODO for watch later parse youtube website watchlater
             #How IN THE WORLD DO I ACCESS SOMEONE ELSE WATCH LATER
             #selenium
 
-#TODO Incositent connections.
-
 async def create_foreign_playlist(msg, client_tup, pipe):
-    try:
-        print(playlist_json)
-        playlist_json = msg.decode('utf-8')
-        json.loads(playlist_json)  
-        print("recieved")
-        # youtubeAPI.createPlaylist(playlist_json)
-    except json.JSONDecodeError:
-        pass
+    playlist_json = msg.decode('utf-8')
+    JsonChunkProcessor.processJsonChunk(playlist_json)
+
+    if JsonChunkProcessor.RECIEVED:
+        print("LETS GO")
+    # youtubeAPI.createPlaylist(playlist_json)
 
 async def main():
     node = None
@@ -67,9 +63,13 @@ async def main():
                     except:
                         print("Server error")
 
-                    print("If you don't see a msg of P2P... you are not connected. restart process.")
-                    while not youtubeAPI.isDone():
+                    print("Waiting For Playlist")
+                    while not JsonChunkProcessor.RECIEVED:
                         await asyncio.sleep(1)
+                    
+                    #TODO allow accept and deny of playlist
+                    print(JsonChunkProcessor.getJson())
+                    # input("Would you like to accept playlist: " + JsonChunkProcessor.getJson())
 
                     choice = "3"
                 except KeyboardInterrupt:
