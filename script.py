@@ -15,13 +15,17 @@ recieved_valid_json_chunk = False
 async def create_foreign_playlist(msg, client_tup, pipe):
     chunk = msg.decode('utf-8')
     #prints the p2p message I want
-    if "p2p" in chunk.lower():
+    if "P2P_CON_ID_EQ" in chunk.lower():
+        print()
         print(chunk)
+        print()
 
     if "{" in chunk and not recieved_valid_json_chunk:
+        print("passed {")
         recieved_valid_json_chunk = True
 
     if recieved_valid_json_chunk:
+        print("passed chunker")
         JsonChunkProcessor.processJsonChunk(chunk)
 
     if JsonChunkProcessor.RECIEVED:
