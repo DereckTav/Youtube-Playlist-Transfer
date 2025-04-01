@@ -13,6 +13,7 @@ import JsonChunkProcessor
 recieved_valid_json_chunk = False
 
 async def create_foreign_playlist(msg, client_tup, pipe):
+    global recieved_valid_json_chunk
     chunk = msg.decode('utf-8')
     #prints the p2p message I want
     if "P2P_CON_ID_EQ" in chunk:
@@ -30,7 +31,6 @@ async def create_foreign_playlist(msg, client_tup, pipe):
 
     if JsonChunkProcessor.RECIEVED:
         print("LETS GO")
-    # youtubeAPI.createPlaylist(playlist_json)
 
 async def main():
     node = None
