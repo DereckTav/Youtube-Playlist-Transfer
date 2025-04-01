@@ -64,4 +64,4 @@ def makePlaylistJsonWithTitle(title):
     pass
 
 if __name__ == "__main__":
-    print(getPlaylistItems('PLFdBzy0C-WaXjLb4TqsNN1Ssv-EIoUNII',))
+    print(getPlaylistItems('PLFdBzy0C-WaXjLb4TqsNN1Ssv-EIoUNII'))
