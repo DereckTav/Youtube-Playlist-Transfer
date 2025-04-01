@@ -26,6 +26,9 @@ async def create_foreign_playlist(msg, client_tup, pipe):
 
     if recieved_valid_json_chunk:
         JsonChunkProcessor.processJsonChunk(chunk)
+    
+    if JsonChunkProcessor.RECIEVED:
+        youtubeAPI.setPlaylistTitle(chunk)
 
 async def main():
     node = None
@@ -86,12 +89,11 @@ async def main():
                     # decision = input("Type 'yes' to receive the playlist, or 'no' if you don't want it. Playlist title <" + JsonChunkProcessor.getJson()["items"]["snippet"]["title"] + ">: ")
                     j = JsonChunkProcessor.getJson()
                     g = json.loads(j)
-                    print(g)
+                    youtubeAPI.createPlaylist(g)
                     while True:
                         # if decision.lower() in ["yes", "y"]:
                         #     print(JsonChunkProcessor.getJson())
                         #     # this is going to fail
-                        #     # youtubeAPI.createPlaylist(JsonChunkProcessor.getJson())
                         #     break
                         # elif decision.lower() in ["no", "n"]:2
 
@@ -177,13 +179,16 @@ async def main():
 
                                     #checks for canceling playlist can be added here
 
-                                    id = playlist_ids[playlist]
+                                    id = playlist_ids[playlist - 1]
+                                    title = playlist_titles[playlist - 1]
 
                                     playlist_json = youtubeAPI.getPlaylistItems(id)
-
                                     binary_data = playlist_json.encode('utf-8')
 
+                                    title_binary_data = title.encode('utf-8')
+
                                     await pipe.send(binary_data)
+                                    await pipe.send(title_binary_data)
                                     
                                     option = "exit"
                                     await pipe.close()

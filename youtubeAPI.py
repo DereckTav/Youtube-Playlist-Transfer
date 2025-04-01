@@ -2,6 +2,8 @@ from googleapiclient.discovery import build
 import json
 from authorization import getCredentials
 
+playlist_title = ""
+
 def getListOfPlaylist():
     credential = getCredentials()
 
@@ -15,12 +17,14 @@ def getListOfPlaylist():
 
         playlist_titles = []
         playlist_ids = []
+        testing = []
 
         while request:
             playlists_response = request.execute()
 
             playlist_titles.extend([item["snippet"]["title"] for item in playlists_response.get("items", [])])
             playlist_ids.extend([item["id"] for item in playlists_response.get("items", [])])
+            testing.extend([item for item in playlists_response.get("items", [])])
 
             token = playlists_response.get('nextPageToken', None)
 
@@ -31,8 +35,9 @@ def getListOfPlaylist():
 
         playlist_ids.append('LL')
         playlist_titles.append('Liked Videos')
+        print(testing)
 
-    return playlist_titles, playlist_ids
+    return playlist_titles, playlist_ids, testing
         
         
 def getPlaylistItems(id):      
@@ -48,20 +53,28 @@ def getPlaylistItems(id):
 
 
 def createPlaylist(playlist_json):
+    global playlist_title
     credential = getCredentials()
 
     with build('youtube', 'v3', credentials=credential) as youtube:
         youtube_playlist = youtube.playlists()
 
-        user = f"({playlist_json["items"]['snippet']['channelTitle']})"
+        user = f"({playlist_json["items"][0]['snippet']['channelTitle']})"
+        print(user)
+        print(title)
 
-        playlist_json["items"]['snippet']['title'] = f"{playlist_json["items"][0]['snippet']['channelTitle']} {user}"
+        # playlist_json["items"]['snippet']['title'] = f"{playlist_json["items"][0]['snippet']['channelTitle']} {user}"
 
-        # response = youtube_playlist.insert(part="snippet", body=)
+        # response = youtube_playlist.insert(part="snippet", body={ "snippet": { "title": title + " from " + user}})
         # response.execute()
+    
+    title = ""
 
-def makePlaylistJsonWithTitle(title):
-    pass
+def setPlaylistTitle(title):
+    global playlist_title
+    playlist_title = title
 
 if __name__ == "__main__":
-    print(getPlaylistItems('PLFdBzy0C-WaXjLb4TqsNN1Ssv-EIoUNII'))
+    playlist_json = getPlaylistItems('PLFdBzy0C-WaXjLb4TqsNN1Ssv-EIoUNII')
+    playlist_json = json.loads(playlist_json)
+    createPlaylist(playlist_json)
