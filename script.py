@@ -10,9 +10,19 @@ import JsonChunkProcessor
             #How IN THE WORLD DO I ACCESS SOMEONE ELSE WATCH LATER
             #selenium
 
+recieved_valid_json_chunk = False
+
 async def create_foreign_playlist(msg, client_tup, pipe):
-    playlist_json = msg.decode('utf-8')
-    JsonChunkProcessor.processJsonChunk(playlist_json)
+    chunk = msg.decode('utf-8')
+    #prints the p2p message I want
+    if "p2p" in chunk.lower():
+        print(chunk)
+
+    if "{" in chunk and not recieved_valid_json_chunk:
+        recieved_valid_json_chunk = True
+
+    if recieved_valid_json_chunk:
+        JsonChunkProcessor.processJsonChunk(chunk)
 
     if JsonChunkProcessor.RECIEVED:
         print("LETS GO")
