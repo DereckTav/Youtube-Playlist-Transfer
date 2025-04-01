@@ -86,9 +86,10 @@ async def main():
 
                     print()
                     #che
-                    decision = input("Type 'yes' to receive the playlist, or 'no' if you don't want it. Playlist title <" + JsonChunkProcessor.getJson()["items"]["snippet"]["title"] + ">: ")
+                    decision = input("Type 'yes' to receive the playlist, or 'no' if you don't want it. Playlist title <" + JsonChunkProcessor.getJson() + ">: ")
                     while True:
                         if decision.lower() in ["yes", "y"]:
+                            print(JsonChunkProcessor.getJson())
                             # this is going to fail
                             # youtubeAPI.createPlaylist(JsonChunkProcessor.getJson())
                             break
