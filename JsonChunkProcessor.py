@@ -7,8 +7,9 @@ def processJsonChunk(chunk):
     json_object.join(chunk)
 
     try:
-        json.loads(json_object)
         print("hello")
+        json.loads(json_object)
+        print("bye")
         global RECIEVED
         RECIEVED = True
         # youtubeAPI.createPlaylist(playlist_json)

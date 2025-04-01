@@ -22,11 +22,9 @@ async def create_foreign_playlist(msg, client_tup, pipe):
         print()
 
     if "{" in chunk and not recieved_valid_json_chunk:
-        print("passed {")
         recieved_valid_json_chunk = True
 
     if recieved_valid_json_chunk:
-        print("passed chunker")
         JsonChunkProcessor.processJsonChunk(chunk)
 
     if JsonChunkProcessor.RECIEVED:
