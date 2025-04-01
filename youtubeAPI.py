@@ -2,6 +2,7 @@ from googleapiclient.discovery import build
 import json
 from authorization import getCredentials
 
+#TODO remove when playlist title is added to json
 playlist_title = ""
 
 def getListOfPlaylist():
@@ -17,14 +18,12 @@ def getListOfPlaylist():
 
         playlist_titles = []
         playlist_ids = []
-        testing = []
 
         while request:
             playlists_response = request.execute()
 
             playlist_titles.extend([item["snippet"]["title"] for item in playlists_response.get("items", [])])
             playlist_ids.extend([item["id"] for item in playlists_response.get("items", [])])
-            testing.extend([item for item in playlists_response.get("items", [])])
 
             token = playlists_response.get('nextPageToken', None)
 
@@ -35,9 +34,8 @@ def getListOfPlaylist():
 
         playlist_ids.append('LL')
         playlist_titles.append('Liked Videos')
-        print(testing)
 
-    return playlist_titles, playlist_ids, testing
+    return playlist_titles, playlist_ids
         
         
 def getPlaylistItems(id):      
@@ -53,7 +51,9 @@ def getPlaylistItems(id):
 
 
 def createPlaylist(playlist_json):
+    #TODO remove when playlist title is added to json
     global playlist_title
+
     credential = getCredentials()
 
     with build('youtube', 'v3', credentials=credential) as youtube:
@@ -70,6 +70,7 @@ def createPlaylist(playlist_json):
     
     title = ""
 
+#TODO remove when playlist title is added to json
 def setPlaylistTitle(title):
     global playlist_title
     playlist_title = title

@@ -27,6 +27,7 @@ async def create_foreign_playlist(msg, client_tup, pipe):
     if recieved_valid_json_chunk:
         JsonChunkProcessor.processJsonChunk(chunk)
     
+    #TODO remove when playlist title is added to json
     if JsonChunkProcessor.RECIEVED:
         youtubeAPI.setPlaylistTitle(chunk)
 
@@ -178,7 +179,7 @@ async def main():
                                             playlist = input("Choose a playlist: ")
 
                                     #checks for canceling playlist can be added here
-
+                                    #TODO make it so that playlist title is added to json
                                     id = playlist_ids[playlist - 1]
                                     title = playlist_titles[playlist - 1]
 
