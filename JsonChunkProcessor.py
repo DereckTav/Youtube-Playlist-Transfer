@@ -12,11 +12,11 @@ def processJsonChunk(chunk):
         json.loads(json_object)
         global RECIEVED
         RECIEVED = True
-        # youtubeAPI.createPlaylist(playlist_json)
 
     except json.JSONDecodeError:
         pass
 
 def getJson():
     return "".join(json_chunks)
+
 # if making a loop to send playlist add function to clear json_object

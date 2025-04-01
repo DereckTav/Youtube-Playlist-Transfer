@@ -86,12 +86,11 @@ async def main():
                     # decision = input("Type 'yes' to receive the playlist, or 'no' if you don't want it. Playlist title <" + JsonChunkProcessor.getJson()["items"]["snippet"]["title"] + ">: ")
                     j = JsonChunkProcessor.getJson()
                     g = json.loads(j)
-                    print(g)
+                    youtubeAPI.createPlaylist(g)
                     while True:
                         # if decision.lower() in ["yes", "y"]:
                         #     print(JsonChunkProcessor.getJson())
                         #     # this is going to fail
-                        #     # youtubeAPI.createPlaylist(JsonChunkProcessor.getJson())
                         #     break
                         # elif decision.lower() in ["no", "n"]:2
 
@@ -176,11 +175,11 @@ async def main():
                                             playlist = input("Choose a playlist: ")
 
                                     #checks for canceling playlist can be added here
+                    
+                                    id = playlist_ids[playlist - 1]
+                                    title = playlist_titles[playlist - 1]
 
-                                    id = playlist_ids[playlist]
-
-                                    playlist_json = youtubeAPI.getPlaylistItems(id)
-
+                                    playlist_json = youtubeAPI.getPlaylistWithTitle(id, title)
                                     binary_data = playlist_json.encode('utf-8')
 
                                     await pipe.send(binary_data)

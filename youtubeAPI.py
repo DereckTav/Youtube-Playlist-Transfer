@@ -35,16 +35,18 @@ def getListOfPlaylist():
     return playlist_titles, playlist_ids
         
         
-def getPlaylistItems(id):      
+def getPlaylistWithTitle(id, title):      
     credential = getCredentials()
 
     with build('youtube', 'v3', credentials=credential) as youtube:
         playlist = youtube.playlistItems()
         request = playlist.list(part='snippet', playlistId=id)
 
-        playlists_response = request.execute()
+        playlist_response = request.execute()
+        title = {"title": f"{title}"}
+        playlist_response.update(title)
 
-    return json.dumps(playlists_response, indent=4)
+    return json.dumps(playlist_response, indent=4)
 
 
 def createPlaylist(playlist_json):
@@ -53,15 +55,18 @@ def createPlaylist(playlist_json):
     with build('youtube', 'v3', credentials=credential) as youtube:
         youtube_playlist = youtube.playlists()
 
-        user = f"({playlist_json["items"]['snippet']['channelTitle']})"
+        user = f"({playlist_json["items"][0]['snippet']['channelTitle']})"
+        print(user)
+        title = playlist_json['title']
+        print(title)
 
-        playlist_json["items"]['snippet']['title'] = f"{playlist_json["items"][0]['snippet']['channelTitle']} {user}"
+        # playlist_json["items"]['snippet']['title'] = f"{playlist_json["items"][0]['snippet']['channelTitle']} {user}"
 
-        # response = youtube_playlist.insert(part="snippet", body=)
+        # response = youtube_playlist.insert(part="snippet", body={ "snippet": { "title": title + " from " + user}})
         # response.execute()
 
-def makePlaylistJsonWithTitle(title):
-    pass
 
 if __name__ == "__main__":
-    print(getPlaylistItems('PLFdBzy0C-WaXjLb4TqsNN1Ssv-EIoUNII'))
+    playlist_json = getPlaylistWithTitle('PLFdBzy0C-WaXjLb4TqsNN1Ssv-EIoUNII', 'HELLO THIS IS THE PLAYLIST NAME')
+    playlist_json = json.loads(playlist_json)
+    createPlaylist(playlist_json)
