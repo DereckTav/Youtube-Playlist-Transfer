@@ -80,8 +80,7 @@ async def main():
                         await asyncio.sleep(1)
                     
                     #TODO allow accept and deny of playlist
-                    print(JsonChunkProcessor.getJson())
-                    # input("Would you like to accept playlist: " + JsonChunkProcessor.getJson())
+                    input("Would you like to accept playlist: " + JsonChunkProcessor.getJson()["items"]["snippet"]["title"])
 
                     choice = "3"
                 except:
