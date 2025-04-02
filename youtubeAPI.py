@@ -54,6 +54,7 @@ def createPlaylist(playlist_json):
 
     with build('youtube', 'v3', credentials=credential) as youtube:
         youtube_playlist = youtube.playlists()
+        youtube_playlistItmes = youtube.playlistItems()
 
         user = f"({playlist_json["items"][0]['snippet']['channelTitle']})"
         title = playlist_json['title']
@@ -63,14 +64,25 @@ def createPlaylist(playlist_json):
                 "title": f"{title} from {user}",
                 "description": f"Playlist transferred from {user}",
             },
-            "status": {
-                "privacyStatus": "private"
-            }
+            
         }
-
-        request = youtube.playlists().insert(part="snippet,status", body=new_playlist)   
+ 
+        request = youtube.playlists().insert(part="snippet,status", body=playlist_json)   
         new_playlist = request.execute()
-        print(new_playlist)
+        id = new_playlist["id"]
+
+        request = youtube_playlistItmes.list(part='snippet', playlistId=id)
+        
+
+        for item in playlist_json["items"]:
+            body = {
+            "snippet": {
+                "playlistId": id,
+                "position": playlist_json["snippet"]["position"],  # Optional ordering
+                "resourceId": playlist_json["snippet"]["resourceId"],
+                }
+            },
+            youtube_playlistItmes.insert(part='snippet', body=body, playlistId=id).execute()
     
     
 
